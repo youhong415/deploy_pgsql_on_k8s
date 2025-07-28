@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: python-web-app
+  template:
+    metadata:
+      labels:
+        app: python-web-app
+    spec:
+      containers:
+      - name: python-web-app
+        image: python-web-app:latest # <-- 使用本地映像檔
+        imagePullPolicy: Never # <-- 告訴 K8s 不要從遠端拉取
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DB_HOST
+          value: "postgres-service"
+        - name: DB_NAME
+          value: "postgres"
+        - name: DB_USER
+          value: "postgres"
+        - name: DB_PASSWORD
+          value: "mysecretpassword"
