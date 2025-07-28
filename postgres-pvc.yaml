@@ -1,10 +1,17 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
+# postgres-pvc.yaml
+# 說明：此檔案定義了一個 PersistentVolumeClaim (PVC)，用於向 Kubernetes 請求持久化儲存空間。
+# PostgreSQL 資料庫將使用此儲存空間來保存其資料，確保即使 Pod 被刪除或重建，資料也能夠保留。
+
+apiVersion: v1 # 指定使用的 Kubernetes API 版本
+kind: PersistentVolumeClaim # 指定要建立的資源類型為 PVC
 metadata:
-  name: postgres-pvc
+  name: postgres-pvc # PVC 的名稱，後續的 Deployment 將會引用此名稱
 spec:
+  # spec 區塊定義了 PVC 的期望狀態
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce # 定義存取模式
+    # ReadWriteOnce：表示這個儲存卷一次只能被一個節點掛載為讀寫模式。這對於資料庫來說是標準設定。
+    # 其他模式還有 ReadOnlyMany (多節點唯讀) 和 ReadWriteMany (多節點讀寫)。
   resources:
     requests:
-      storage: 1Gi
+      storage: 1Gi # 請求的儲存空間大小。這裡請求 1 GiB (Gibibyte) 的空間。

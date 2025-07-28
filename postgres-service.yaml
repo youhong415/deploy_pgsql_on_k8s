@@ -1,12 +1,22 @@
+# postgres-service.yaml
+# 說明：此檔案定義了 PostgreSQL 的 Service。
+# Service 為一組 Pod (由 selector 決定) 提供了一個固定的連線端點 (IP 位址和 DNS 名稱)。
+# 這使得叢集內的其他應用程式可以透過一個穩定的名稱 (postgres-service) 來連線到 PostgreSQL，而無需關心 Pod 的實際 IP。
+
 apiVersion: v1
-kind: Service
+kind: Service # 指定資源類型為 Service
 metadata:
-  name: postgres-service
+  name: postgres-service # Service 的名稱，這也將是叢集內部的 DNS 名稱。
 spec:
   selector:
-    app: postgres
+    # selector 用於找到此 Service 應該將流量轉發到哪些 Pod。
+    app: postgres # 將流量轉發到所有標籤為 "app: postgres" 的 Pod。
+
   ports:
-    - protocol: TCP
-      port: 5432
-      targetPort: 5432
-  type: ClusterIP
+    - protocol: TCP # 使用的協議
+      port: 5432 # Service 本身開放的埠號。其他應用程式將連線到這個埠號。
+      targetPort: 5432 # 流量要轉發到目標 Pod 的哪個埠號。這裡對應 PostgreSQL 容器開放的 5432 埠。
+
+  type: ClusterIP # Service 的類型。
+  # ClusterIP：只在叢集內部提供一個虛擬 IP，這是預設類型，適用於內部服務間的通訊。
+  # 其他類型還有 NodePort (在每個節點上開放一個靜態埠) 和 LoadBalancer (使用雲端服務商的負載平衡器)。

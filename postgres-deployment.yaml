@@ -1,33 +1,48 @@
-apiVersion: apps/v1
-kind: Deployment
+# postgres-deployment.yaml
+# 說明：此檔案定義了 PostgreSQL 的 Deployment。
+# Deployment 負責管理 Pod 的生命週期，確保指定數量的 Pod 副本正在運行。
+
+apiVersion: apps/v1 # 指定 API 版本，apps/v1 適用於 Deployment
+kind: Deployment # 指定資源類型為 Deployment
 metadata:
-  name: postgres-deployment
+  name: postgres-deployment # Deployment 的名稱
 spec:
-  replicas: 1
+  replicas: 1 # 指定要運行的 Pod 副本數量。對於單節點資料庫，通常設定為 1。
+
   selector:
+    # selector 用於找到此 Deployment 應該管理的 Pod。
+    # 它會匹配擁有相同標籤 (label) 的 Pod。
     matchLabels:
-      app: postgres
+      app: postgres # 匹配標籤為 "app: postgres" 的 Pod
+
   template:
+    # template 是建立新 Pod 時使用的範本。
     metadata:
       labels:
-        app: postgres
+        app: postgres # 為從此範本建立的 Pod 加上標籤 "app: postgres"，以便被上面的 selector 選中。
     spec:
+      # spec 定義了 Pod 的期望狀態，包含容器、儲存等設定。
       containers:
-      - name: postgres
-        image: postgres:latest
+      - name: postgres # 容器的名稱
+        image: postgres:latest # 用於建立容器的 Docker 映像檔。'latest' 會使用最新的版本。
         ports:
-        - containerPort: 5432
+        - containerPort: 5432 # 容器內部開放的埠號，PostgreSQL 預設使用 5432。
         env:
+          # env 設定容器內的環境變數，用於配置 PostgreSQL。
         - name: POSTGRES_USER
-          value: "postgres"
+          value: "postgres" # 設定 PostgreSQL 的使用者名稱
         - name: POSTGRES_PASSWORD
-          value: "mysecretpassword"
+          value: "mysecretpassword" # 設定 PostgreSQL 的密碼 (在生產環境中應使用 Secret)
         - name: POSTGRES_DB
-          value: "postgres"
+          value: "postgres" # 設定要建立的預設資料庫名稱
         volumeMounts:
-        - name: postgres-storage
-          mountPath: /var/lib/postgresql/data
+          # volumeMounts 將 volumes 中定義的儲存卷掛載到容器的指定路徑。
+        - name: postgres-storage # 要掛載的儲存卷名稱，對應下面 volumes 的定義。
+          mountPath: /var/lib/postgresql/data # 掛載到容器內的路徑，這是 PostgreSQL 儲存資料的預設位置。
+
       volumes:
-      - name: postgres-storage
+        # volumes 定義了可供 Pod 中所有容器使用的儲存卷。
+      - name: postgres-storage # 儲存卷的名稱，必須與上面 volumeMounts 的名稱一致。
         persistentVolumeClaim:
-          claimName: postgres-pvc
+          # 指定此儲存卷的來源是一個 PVC。
+          claimName: postgres-pvc # 使用名為 "postgres-pvc" 的 PVC。

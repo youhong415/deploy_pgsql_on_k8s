@@ -1,12 +1,21 @@
+# web-app-service.yaml
+# 說明：此檔案定義了 Python Web 應用程式的 Service。
+# 它的主要目的是將應用程式暴露到 Kubernetes 叢集外部，以便我們可以透過瀏覽器存取。
+
 apiVersion: v1
 kind: Service
 metadata:
   name: web-app-service
 spec:
   selector:
+    # 將流量轉發到標籤為 "app: python-web-app" 的 Pod。
     app: python-web-app
+
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 5000
-  type: NodePort
+      port: 80 # Service 在叢集內部監聽的埠號。
+      targetPort: 5000 # 流量要轉發到目標 Pod 的哪個埠號 (對應 Python 應用的 5000 埠)。
+
+  type: NodePort # Service 的類型。
+  # NodePort：會在每個 Kubernetes 節點上開放一個相同的、隨機或指定的靜態埠 (通常在 30000-32767 範圍內)。
+  # 這使得我們可以透過 <節點IP>:<NodePort> 的方式從外部網路存取此 Service。

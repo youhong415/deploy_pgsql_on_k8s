@@ -1,29 +1,36 @@
+# web-app-deployment.yaml
+# 說明：此檔案定義了 Python Web 應用程式的 Deployment。
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: web-app-deployment
 spec:
-  replicas: 1
+  replicas: 1 # 運行 1 個應用程式副本
   selector:
     matchLabels:
-      app: python-web-app
+      app: python-web-app # 找到標籤為 "app: python-web-app" 的 Pod
   template:
     metadata:
       labels:
-        app: python-web-app
+        app: python-web-app # 為新建立的 Pod 加上此標籤
     spec:
       containers:
-      - name: python-web-app
-        image: python-web-app:latest # <-- 使用本地映像檔
-        imagePullPolicy: Never # <-- 告訴 K8s 不要從遠端拉取
+      - name: python-web-app # 容器名稱
+        image: python-web-app:latest # 使用的 Docker 映像檔名稱。
+        imagePullPolicy: Never # 設定映像檔拉取策略。
+        # Never：表示永遠不從遠端倉庫拉取，只使用節點上已存在的本地映像檔。這在本地開發時非常有用。
+        # Always：(預設值) 每次建立 Pod 都會嘗試拉取最新映像檔。
+        # IfNotPresent：如果本地不存在該映像檔，則從遠端拉取。
         ports:
-        - containerPort: 5000
+        - containerPort: 5000 # 應用程式容器內部監聽的埠號 (對應 app.py 中的設定)
         env:
+          # 設定環境變數，供 app.py 讀取以連線到資料庫。
         - name: DB_HOST
-          value: "postgres-service"
+          value: "postgres-service" # 資料庫主機。這裡使用 PostgreSQL Service 的名稱，Kubernetes 會自動解析為正確的 IP。
         - name: DB_NAME
-          value: "postgres"
+          value: "postgres" # 要連線的資料庫名稱
         - name: DB_USER
-          value: "postgres"
+          value: "postgres" # 連線使用的使用者名稱
         - name: DB_PASSWORD
-          value: "mysecretpassword"
+          value: "mysecretpassword" # 連線使用的密碼 (同樣地，生產環境應使用 Secret)
