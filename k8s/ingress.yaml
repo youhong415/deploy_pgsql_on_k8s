@@ -1,0 +1,33 @@
+# k8s/ingress.yaml
+# 說明：此檔案定義了 Ingress 資源，用於管理外部對叢集內服務的 HTTP/HTTPS 存取。
+# Ingress 可以提供負載平衡、TLS 終止和基於名稱的虛擬主機託管。
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: deploy-pgsql-on-k8s-ingress
+  annotations:
+    # annotations 用於配置 Ingress Controller 的特定行為。
+    # 以下是 NGINX Ingress Controller 常見的設定，用於將 HTTP 請求自動重定向到 HTTPS。
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx # 明確指定使用名為 "nginx" 的 IngressClass
+  # tls 區塊定義了 TLS 的設定。
+  tls:
+  - hosts:
+      - myapp.local # 指定此 TLS 憑證適用於哪個主機名稱。
+    secretName: deploy-pgsql-on-k8s-tls-secret # 包含 TLS 憑證和私鑰的 Secret 名稱。
+
+  # rules 區塊定義了流量的路由規則。
+  rules:
+  - http:
+      paths:
+      - path: / # 匹配根路徑 (/) 的所有請求。
+        pathType: Prefix # 路徑匹配類型。
+        backend:
+          # backend 定義了流量應該被轉發到哪裡。
+          service:
+            name: deploy-pgsql-on-k8s-web-app-service # 目標 Service 的名稱。
+            port:
+              number: 80 # 目標 Service 的埠號。

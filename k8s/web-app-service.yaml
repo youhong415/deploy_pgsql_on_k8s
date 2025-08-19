@@ -16,6 +16,6 @@ spec:
       port: 80 # Service 在叢集內部監聽的埠號。
       targetPort: 5000 # 流量要轉發到目標 Pod 的哪個埠號 (對應 Python 應用的 5000 埠)。
 
-  type: NodePort # Service 的類型。
-  # NodePort：會在每個 Kubernetes 節點上開放一個相同的、隨機或指定的靜態埠 (通常在 30000-32767 範圍內)。
-  # 這使得我們可以透過 <節點IP>:<NodePort> 的方式從外部網路存取此 Service。
+  type: ClusterIP # Service 的類型。
+  # ClusterIP：只在叢集內部提供一個虛擬 IP，這是預設類型，適用於內部服務間的通訊。
+  # 外部流量應透過 Ingress 進入，而不是直接存取 Service。
