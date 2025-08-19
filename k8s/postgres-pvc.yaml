@@ -5,7 +5,7 @@
 apiVersion: v1 # 指定使用的 Kubernetes API 版本
 kind: PersistentVolumeClaim # 指定要建立的資源類型為 PVC
 metadata:
-  name: postgres-pvc # PVC 的名稱，後續的 Deployment 將會引用此名稱
+  name: deploy-pgsql-on-k8s-postgres-pvc # PVC 的名稱，後續的 Deployment 將會引用此名稱
 spec:
   # spec 區塊定義了 PVC 的期望狀態
   accessModes:

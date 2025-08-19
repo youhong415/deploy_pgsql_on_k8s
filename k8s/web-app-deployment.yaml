@@ -4,20 +4,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web-app-deployment
+  name: deploy-pgsql-on-k8s-web-app-deployment
 spec:
   replicas: 1 # 運行 1 個應用程式副本
   selector:
     matchLabels:
-      app: python-web-app # 找到標籤為 "app: python-web-app" 的 Pod
+      app: deploy-pgsql-on-k8s-python-web-app # 找到標籤為 "app: deploy-pgsql-on-k8s-python-web-app" 的 Pod
   template:
     metadata:
       labels:
-        app: python-web-app # 為新建立的 Pod 加上此標籤
+        app: deploy-pgsql-on-k8s-python-web-app # 為新建立的 Pod 加上此標籤
     spec:
       containers:
-      - name: python-web-app # 容器名稱
-        image: python-web-app:latest # 使用的 Docker 映像檔名稱。
+      - name: deploy-pgsql-on-k8s-python-web-app # 容器名稱
+        image: deploy-pgsql-on-k8s-python-web-app:latest # 使用的 Docker 映像檔名稱。
         imagePullPolicy: Never # 設定映像檔拉取策略。
         # Never：表示永遠不從遠端倉庫拉取，只使用節點上已存在的本地映像檔。這在本地開發時非常有用。
         # Always：(預設值) 每次建立 Pod 都會嘗試拉取最新映像檔。
@@ -27,7 +27,7 @@ spec:
         env:
           # 設定環境變數，供 app.py 讀取以連線到資料庫。
         - name: DB_HOST
-          value: "postgres-service" # 資料庫主機。這裡使用 PostgreSQL Service 的名稱，Kubernetes 會自動解析為正確的 IP。
+          value: "deploy-pgsql-on-k8s-postgres-service" # 資料庫主機。這裡使用 PostgreSQL Service 的名稱，Kubernetes 會自動解析為正確的 IP。
         - name: DB_NAME
           value: "postgres" # 要連線的資料庫名稱
         - name: DB_USER

@@ -1,16 +1,16 @@
 # postgres-service.yaml
 # 說明：此檔案定義了 PostgreSQL 的 Service。
 # Service 為一組 Pod (由 selector 決定) 提供了一個固定的連線端點 (IP 位址和 DNS 名稱)。
-# 這使得叢集內的其他應用程式可以透過一個穩定的名稱 (postgres-service) 來連線到 PostgreSQL，而無需關心 Pod 的實際 IP。
+# 這使得叢集內的其他應用程式可以透過一個穩定的名稱 (deploy-pgsql-on-k8s-postgres-service) 來連線到 PostgreSQL，而無需關心 Pod 的實際 IP。
 
 apiVersion: v1
 kind: Service # 指定資源類型為 Service
 metadata:
-  name: postgres-service # Service 的名稱，這也將是叢集內部的 DNS 名稱。
+  name: deploy-pgsql-on-k8s-postgres-service # Service 的名稱，這也將是叢集內部的 DNS 名稱。
 spec:
   selector:
     # selector 用於找到此 Service 應該將流量轉發到哪些 Pod。
-    app: postgres # 將流量轉發到所有標籤為 "app: postgres" 的 Pod。
+    app: deploy-pgsql-on-k8s-postgres # 將流量轉發到所有標籤為 "app: deploy-pgsql-on-k8s-postgres" 的 Pod。
 
   ports:
     - protocol: TCP # 使用的協議

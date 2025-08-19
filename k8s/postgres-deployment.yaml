@@ -5,7 +5,7 @@
 apiVersion: apps/v1 # 指定 API 版本，apps/v1 適用於 Deployment
 kind: Deployment # 指定資源類型為 Deployment
 metadata:
-  name: postgres-deployment # Deployment 的名稱
+  name: deploy-pgsql-on-k8s-postgres-deployment # Deployment 的名稱
 spec:
   replicas: 1 # 指定要運行的 Pod 副本數量。對於單節點資料庫，通常設定為 1。
 
@@ -13,13 +13,13 @@ spec:
     # selector 用於找到此 Deployment 應該管理的 Pod。
     # 它會匹配擁有相同標籤 (label) 的 Pod。
     matchLabels:
-      app: postgres # 匹配標籤為 "app: postgres" 的 Pod
+      app: deploy-pgsql-on-k8s-postgres # 匹配標籤為 "app: deploy-pgsql-on-k8s-postgres" 的 Pod
 
   template:
     # template 是建立新 Pod 時使用的範本。
     metadata:
       labels:
-        app: postgres # 為從此範本建立的 Pod 加上標籤 "app: postgres"，以便被上面的 selector 選中。
+        app: deploy-pgsql-on-k8s-postgres # 為從此範本建立的 Pod 加上標籤 "app: deploy-pgsql-on-k8s-postgres"，以便被上面的 selector 選中。
     spec:
       # spec 定義了 Pod 的期望狀態，包含容器、儲存等設定。
       containers:
@@ -45,4 +45,4 @@ spec:
       - name: postgres-storage # 儲存卷的名稱，必須與上面 volumeMounts 的名稱一致。
         persistentVolumeClaim:
           # 指定此儲存卷的來源是一個 PVC。
-          claimName: postgres-pvc # 使用名為 "postgres-pvc" 的 PVC。
+          claimName: deploy-pgsql-on-k8s-postgres-pvc # 使用名為 "deploy-pgsql-on-k8s-postgres-pvc" 的 PVC。
